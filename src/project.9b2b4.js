@@ -1478,7 +1478,7 @@ window.__require = function e(t, n, c) {
 				}, this);
             },
             start: function() {
-				c.playTime = 9999;
+				//c.playTime = 9999;
                 this.schedule(function() {
                     c.playTime--,
                     c.haoshi++,
