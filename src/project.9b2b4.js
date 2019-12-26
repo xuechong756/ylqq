@@ -1415,21 +1415,33 @@ window.__require = function e(t, n, c) {
 				//时间按键
 				var thisObj = this;
 				var timebiao = cc.find("mianban/timebiao", this.node);
+				timebiao.runAction(cc.repeatForever(cc.sequence(cc.scaleTo(.5, 1.02), cc.scaleTo(.5, 0.98))));
+				
 				//黑洞按钮
 				var zhengE = cc.find("mianban/zhengE", this.node);
+				zhengE.runAction(cc.repeatForever(cc.sequence(cc.scaleTo(.5, 1.02), cc.scaleTo(.5, 0.98))));
+				
+				//埋点 
+				var thisObj = this;
+				this.TimerCheckAd = setInterval(function(){
+					var canPlay = 1;
+					thisObj.CanPlayVideo = canPlay;
+					if(!canPlay){
+						timebiao.stopAllActions();
+						zhengE.stopAllActions();
+					}
+				}, 500);
 				
 				timebiao.on(cc.Node.EventType.TOUCH_START, function(event){
-					//埋点 激励获得时间10s
-					{
+					//埋点 激励获得时间10s。 ！
+					if(thisObj.CanPlayVideo){
 						c.playTime += 10;
 						thisObj.timeLabe.getComponent(cc.Label).string = ": " + c.playTime + " s";
-					}
-					
-					
+					}		
 				}, this);
 				zhengE.on(cc.Node.EventType.TOUCH_START, function(event){
 					//埋点 激励获得黑洞1个
-					{
+					if(thisObj.CanPlayVideo){
 						c.num_yinli += 1;
 						thisObj.yinliLabe.getComponent(cc.Label).string = ": " + c.num_yinli + " \u4e2a";
 					}
@@ -1437,7 +1449,7 @@ window.__require = function e(t, n, c) {
 				}, this);
             },
             start: function() {
-				//c.playTime = 9999;
+				c.playTime = 9999;
                 this.schedule(function() {
                     c.playTime--,
                     c.haoshi++,
@@ -1448,6 +1460,9 @@ window.__require = function e(t, n, c) {
                     this.ctx.clear())
                 }, 1)
             },
+			onDestroy:function(){
+				clearInterval(this.TimerCheckAd);
+			},
             update: function(e) {
                 if (c.center_x.length > 0) {
                     var t = this.mean_array(c.center_x, this.player.x)
