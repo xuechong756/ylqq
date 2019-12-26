@@ -1077,12 +1077,12 @@ window.__require = function e(t, n, c) {
                 }
             },
             wxupdate: function() {
-                var e = c.num_door;
-                cc.sys.platform === cc.sys.WECHAT_GAME ? window.wx.postMessage({
-                    messageType: 3,
-                    MAIN_MENU_NUM: "x1",
-                    score: e
-                }) : cc.log("\u63d0\u4ea4\u5f97\u5206: x1 : " + e)
+                // var e = c.num_door;
+                // cc.sys.platform === cc.sys.WECHAT_GAME ? window.wx.postMessage({
+                //     messageType: 3,
+                //     MAIN_MENU_NUM: "x1",
+                //     score: e
+                // }) : cc.log("\u63d0\u4ea4\u5f97\u5206: x1 : " + e)
             },
             onLoad: function() {
                 cc.director.preloadScene("main"),
@@ -1121,49 +1121,33 @@ window.__require = function e(t, n, c) {
                     cc.director.loadScene("success"))
                 }),
                 this.success_btn.on("touchstart", function() {
-                    cc.log("\u8f6c\u53d1"),
-                    cc.sys.platform === cc.sys.WECHAT_GAME && wx.shareAppMessage({
-                        title: "@\u6211 \u6211\u5df2\u7ecf\u8fbe\u5230\u7b2c" + c.num_door + "\u5173\u4e86\uff0c\u4f60\u6562\u6311\u6218\u6211\u5417\uff1f",
-                        imageUrl: "https://www.ldfangqi.cn/yinlidanzhures/res/tupian/share.png",
-                        success: function(e) {
-                            console.log("\u8f6c\u53d1\u6210\u529f!!!"),
-                            wx.showToast({
-                                title: "\u8f6c\u53d1\u6210\u529f",
-                                icon: "success"
-                            })
-                        },
-                        fail: function(e) {
-                            console.log("\u8f6c\u53d1\u5931\u8d25"),
-                            wx.showToast({
-                                title: "\u8f6c\u53d1\u5931\u8d25",
-                                icon: "none"
-                            })
-                        }
-                    })
+					//埋点 分享
+					//console.log("share");
+					window.h5api && window.h5api.share();
                 }),
                 this.defeat_btn.on("touchstart", function() {
-                    cc.log("\u8f6c\u53d1");
-                    var e = c.num_door + 1;
-                    cc.sys.platform === cc.sys.WECHAT_GAME && wx.shareAppMessage({
-                        title: "@\u6211 \u6211\u5361\u5728\u7b2c" + e + "\u5173\u4e86\uff0c\u5feb\u6765\u5e2e\u5e2e\u6211\u5427",
-                        imageUrl: "https://www.ldfangqi.cn/yinlidanzhures/res/tupian/share.png",
-                        success: function(e) {
-                            console.log("\u8f6c\u53d1\u6210\u529f!!!"),
-                            wx.showToast({
-                                title: "\u8f6c\u53d1\u6210\u529f",
-                                icon: "success"
-                            }),
-                            c.num_door++,
-                            this.wxupdate()
-                        },
-                        fail: function(e) {
-                            console.log("\u8f6c\u53d1\u5931\u8d25"),
-                            wx.showToast({
-                                title: "\u8f6c\u53d1\u5931\u8d25",
-                                icon: "none"
-                            })
-                        }
-                    })
+                    // cc.log("\u8f6c\u53d1");
+                    // var e = c.num_door + 1;
+                    // cc.sys.platform === cc.sys.WECHAT_GAME && wx.shareAppMessage({
+                    //     title: "@\u6211 \u6211\u5361\u5728\u7b2c" + e + "\u5173\u4e86\uff0c\u5feb\u6765\u5e2e\u5e2e\u6211\u5427",
+                    //     imageUrl: "https://www.ldfangqi.cn/yinlidanzhures/res/tupian/share.png",
+                    //     success: function(e) {
+                    //         console.log("\u8f6c\u53d1\u6210\u529f!!!"),
+                    //         wx.showToast({
+                    //             title: "\u8f6c\u53d1\u6210\u529f",
+                    //             icon: "success"
+                    //         }),
+                    //         c.num_door++,
+                    //         this.wxupdate()
+                    //     },
+                    //     fail: function(e) {
+                    //         console.log("\u8f6c\u53d1\u5931\u8d25"),
+                    //         wx.showToast({
+                    //             title: "\u8f6c\u53d1\u5931\u8d25",
+                    //             icon: "none"
+                    //         })
+                    //     }
+                    // })
                 }),
                 0 == c.is_Success) {
                     if (this.success.active = !1,
@@ -1175,8 +1159,8 @@ window.__require = function e(t, n, c) {
                     this.label_time.getComponent(cc.Label).string = c.haoshi + " s",
                     cc.sys.platform === cc.sys.WECHAT_GAME) {
                         var i = parseInt(wx.getStorageSync("time")) + c.haoshi;
-                        this.label_leijitime.getComponent(cc.Label).string = +i + " s",
-                        wx.setStorageSync("time", i)
+                        this.label_leijitime.getComponent(cc.Label).string = +i + " s";
+                        //wx.setStorageSync("time", i)
                     }
                 } else if (this.success.active = !0,
                 this.defeat.active = !1,
@@ -1186,13 +1170,13 @@ window.__require = function e(t, n, c) {
                 this.label_tittle.getComponent(cc.Label).string = "\u6210\u529f",
                 this.label_time.getComponent(cc.Label).string = c.haoshi + " s",
                 c.num_door++,
-                this.wxupdate(),
-                cc.sys.platform === cc.sys.WECHAT_GAME) {
-                    var a = parseInt(wx.getStorageSync("time")) + c.haoshi;
-                    this.label_leijitime.getComponent(cc.Label).string = a + " s",
-                    wx.setStorageSync("time", a),
-                    c.num_door >= parseInt(wx.getStorageSync("level")) ? wx.setStorageSync("level", c.num_door) : 0 == c.ppppp && (c.num_door = parseInt(wx.getStorageSync("level")))
-                }
+                this.wxupdate());
+            //    if( cc.sys.platform === cc.sys.WECHAT_GAME) {
+            //         var a = parseInt(wx.getStorageSync("time")) + c.haoshi;
+            //         this.label_leijitime.getComponent(cc.Label).string = a + " s",
+            //         wx.setStorageSync("time", a),
+            //         c.num_door >= parseInt(wx.getStorageSync("level")) ? wx.setStorageSync("level", c.num_door) : 0 == c.ppppp && (c.num_door = parseInt(wx.getStorageSync("level")))
+            //     }
             }
         }),
         cc._RF.pop()
@@ -1443,6 +1427,7 @@ window.__require = function e(t, n, c) {
 				timebiao.on(cc.Node.EventType.TOUCH_START, function(event){
 					//埋点 激励获得时间10s。 激励回调下面
 					if(thisObj.CanPlayVideo){
+						this.unschedule(this.timerFun);
 						if(window.h5api && confirm("是否播放视频,获得相应奖励？")){
 							window.h5api.playAd(function(obj){
 								console.log('代码:' + obj.code + ',消息:' + obj.message);
@@ -1451,16 +1436,21 @@ window.__require = function e(t, n, c) {
 								} else if (obj.code === 10001) {
 									c.playTime += 10;
 									thisObj.timeLabe.getComponent(cc.Label).string = ": " + c.playTime + " s";
+									this.schedule(this.timerFun, 1);
 								} else {
 									console.log('广告异常');
+									this.schedule(this.timerFun, 1);
 								}
 							}.bind(this));
+						}else{
+							this.schedule(this.timerFun, 1);
 						}
 					}		
 				}, this);
 				zhengE.on(cc.Node.EventType.TOUCH_START, function(event){
 					//埋点 激励获得黑洞1个  激励回调下面
 					if(thisObj.CanPlayVideo){
+						this.unschedule(this.timerFun);
 						if(window.h5api && confirm("是否播放视频,获得相应奖励？")){
 							window.h5api.playAd(function(obj){
 								console.log('代码:' + obj.code + ',消息:' + obj.message);
@@ -1469,26 +1459,31 @@ window.__require = function e(t, n, c) {
 								} else if (obj.code === 10001) {
 									c.num_yinli += 1;
 									thisObj.yinliLabe.getComponent(cc.Label).string = ": " + c.num_yinli + " \u4e2a";
+									 this.schedule(this.timerFun, 1);
 								} else {
 									console.log('广告异常');
+									this.schedule(this.timerFun, 1);
 								}
 							}.bind(this));
+						}else{
+							this.schedule(this.timerFun, 1);
 						}
 					}
 				}, this);
             },
             start: function() {
 				//c.playTime = 9999;
-                this.schedule(function() {
-                    c.playTime--,
+                this.schedule(this.timerFun, 1);
+            },
+			timerFun:function(){
+				c.playTime--,
                     c.haoshi++,
                     this.timeLabe.getComponent(cc.Label).string = ": " + c.playTime + " s",
                     c.playTime < 1 && (c.is_Success = 0,
                     cc.eventManager.removeListener(c.listener),
                     cc.director.loadScene("gameover"),
                     this.ctx.clear())
-                }, 1)
-            },
+			},
 			onDestroy:function(){
 				clearInterval(this.TimerCheckAd);
 			},
@@ -1723,10 +1718,10 @@ window.__require = function e(t, n, c) {
             },
             _updateSubDomainCanvas: function() {
                 if (this.tex) {
-                    if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-                        var e = wx.getOpenDataContext().canvas;
-                        this.tex.initWithElement(e)
-                    }
+                    // if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+                    //     var e = wx.getOpenDataContext().canvas;
+                    //     this.tex.initWithElement(e)
+                    // }
                     this.tex.handleLoadedTexture(),
                     this.display.spriteFrame = new cc.SpriteFrame(this.tex)
                 }
@@ -1970,24 +1965,25 @@ window.__require = function e(t, n, c) {
                 }),
                 wx.showShareMenu(),
                 wx.onShareAppMessage(function(e) {
-                    return {
-                        title: "@\u6211 \u8fd9\u4e2a\u5c0f\u6e38\u620f\u771f\u7684\u597d\u706b\uff01",
-                        imageUrl: "https://www.ldfangqi.cn/yinlidanzhures/res/tupian/share.png",
-                        success: function(e) {
-                            console.log("\u8f6c\u53d1\u6210\u529f!!!"),
-                            wx.showToast({
-                                title: "\u8f6c\u53d1\u6210\u529f",
-                                icon: "success"
-                            })
-                        },
-                        fail: function(e) {
-                            console.log("\u8f6c\u53d1\u5931\u8d25!!!"),
-                            wx.showToast({
-                                title: "\u8f6c\u53d1\u5931\u8d25",
-                                icon: "none"
-                            })
-                        }
-                    }
+                    
+                    // return {
+                    //     title: "@\u6211 \u8fd9\u4e2a\u5c0f\u6e38\u620f\u771f\u7684\u597d\u706b\uff01",
+                    //     imageUrl: "https://www.ldfangqi.cn/yinlidanzhures/res/tupian/share.png",
+                    //     success: function(e) {
+                    //         console.log("\u8f6c\u53d1\u6210\u529f!!!"),
+                    //         wx.showToast({
+                    //             title: "\u8f6c\u53d1\u6210\u529f",
+                    //             icon: "success"
+                    //         })
+                    //     },
+                    //     fail: function(e) {
+                    //         console.log("\u8f6c\u53d1\u5931\u8d25!!!"),
+                    //         wx.showToast({
+                    //             title: "\u8f6c\u53d1\u5931\u8d25",
+                    //             icon: "none"
+                    //         })
+                    //     }
+                    // }
                 }));
                 var t = cc.scaleTo(.8, .9)
                   , n = cc.scaleTo(.8, 1)
