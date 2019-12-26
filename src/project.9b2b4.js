@@ -1098,7 +1098,14 @@ window.__require = function e(t, n, c) {
                   , o = cc.repeatForever(n);
                 if (this.rank_btn.on("touchstart", function() {
 					//埋点 排行榜
-					console.log("ranking");
+					//console.log("ranking");
+					if(window.h5api){
+						if (window.h5api.isLogin()) {
+						 window.h5api.showRanking();
+						} else if (confirm("登录后才能看到好友哦~")) {
+							window.h5api.login(function (obj) { });
+						}
+					}
                  /*   cc.sys.platform === cc.sys.WECHAT_GAME ? window.wx.postMessage({
                         messageType: 1,
                         MAIN_MENU_NUM: "x1"
@@ -1421,31 +1428,53 @@ window.__require = function e(t, n, c) {
 				var zhengE = cc.find("mianban/zhengE", this.node);
 				zhengE.runAction(cc.repeatForever(cc.sequence(cc.scaleTo(.5, 1.02), cc.scaleTo(.5, 0.98))));
 				
-				//埋点 
-				var thisObj = this;
+				//埋点 检查激励 
 				this.TimerCheckAd = setInterval(function(){
-					var canPlay = 1;
-					thisObj.CanPlayVideo = canPlay;
-					if(!canPlay){
-						timebiao.stopAllActions();
-						zhengE.stopAllActions();
-					}
+					window.h5api && window.h5api.canPlayAd(function(data){
+						var canPlay = data.canPlayAd;
+						thisObj.CanPlayVideo = canPlay;
+						if(!canPlay){
+							timebiao.stopAllActions();
+							zhengE.stopAllActions();
+						}
+					}.bind(this));
 				}, 500);
 				
 				timebiao.on(cc.Node.EventType.TOUCH_START, function(event){
-					//埋点 激励获得时间10s。 ！
+					//埋点 激励获得时间10s。 激励回调下面
 					if(thisObj.CanPlayVideo){
-						c.playTime += 10;
-						thisObj.timeLabe.getComponent(cc.Label).string = ": " + c.playTime + " s";
+						if(window.h5api && confirm("是否播放视频,获得相应奖励？")){
+							window.h5api.playAd(function(obj){
+								console.log('代码:' + obj.code + ',消息:' + obj.message);
+								if (obj.code === 10000) {
+									console.log('开始播放');
+								} else if (obj.code === 10001) {
+									c.playTime += 10;
+									thisObj.timeLabe.getComponent(cc.Label).string = ": " + c.playTime + " s";
+								} else {
+									console.log('广告异常');
+								}
+							}.bind(this));
+						}
 					}		
 				}, this);
 				zhengE.on(cc.Node.EventType.TOUCH_START, function(event){
-					//埋点 激励获得黑洞1个
+					//埋点 激励获得黑洞1个  激励回调下面
 					if(thisObj.CanPlayVideo){
-						c.num_yinli += 1;
-						thisObj.yinliLabe.getComponent(cc.Label).string = ": " + c.num_yinli + " \u4e2a";
+						if(window.h5api && confirm("是否播放视频,获得相应奖励？")){
+							window.h5api.playAd(function(obj){
+								console.log('代码:' + obj.code + ',消息:' + obj.message);
+								if (obj.code === 10000) {
+									console.log('开始播放');
+								} else if (obj.code === 10001) {
+									c.num_yinli += 1;
+									thisObj.yinliLabe.getComponent(cc.Label).string = ": " + c.num_yinli + " \u4e2a";
+								} else {
+									console.log('广告异常');
+								}
+							}.bind(this));
+						}
 					}
-			
 				}, this);
             },
             start: function() {
@@ -1975,7 +2004,14 @@ window.__require = function e(t, n, c) {
                     }) : cc.log("\u83b7\u53d6\u597d\u53cb\u6392\u884c\u699c\u6570\u636e\u3002x1"),
                     cc.director.loadScene("rank")*/
 					//埋点 排行榜
-					console.log("ranking");
+					//console.log("ranking");
+					if(window.h5api){
+						if (window.h5api.isLogin()) {
+						 window.h5api.showRanking();
+						} else if (confirm("登录后才能看到好友哦~")) {
+							window.h5api.login(function (obj) { });
+						}
+					}
                 });
 				
 				var recomNode = new cc.Node();
@@ -1990,7 +2026,8 @@ window.__require = function e(t, n, c) {
 				recomNode.runAction(action);
 				recomNode.on(cc.Node.EventType.TOUCH_START, function(){
 					//埋点 推荐更多好玩
-					console.log("more game");
+					//console.log("more game");
+					window.h5api && window.h5api.showRecommend();
 				}, this);	
 				this.node.addChild(recomNode);	
             },
