@@ -1381,27 +1381,10 @@ window.__require = function e(t, n, c) {
 				//修改
 				var lastDoor = cc.sys.localStorage.getItem("level");
 				if(c.num_door != lastDoor){
-					var markNode = new cc.Node();
-					markNode.width = cc.winSize.width;
-					markNode.height = cc.winSize.height;
-					markNode.addComponent(cc.BlockInputEvents);
-					var labelNode = new cc.Node();
-					var label = labelNode.addComponent(cc.Label);
-					markNode.addChild(labelNode);
-					this.node.addChild(markNode);
-					
-					var numLabel = 3;
-					label.string = numLabel;
-					this.TimeNumStart = setInterval(function(){
-						if((--numLabel) >= 0){
-							label.string = numLabel;
-						}else{
-							clearInterval(this.TimeNumStart);
-							markNode.destroy();
-							c.num_door = lastDoor;
-							cc.director.loadScene("main");
-						}
-					}.bind(this), 1000);
+					setTimeout(function(){
+						c.num_door = lastDoor;
+						cc.director.loadScene("main");
+					}, 300);
 				}
 
                 this.timeLabe = cc.find("Canvas/mianban/timebiao/time"),
