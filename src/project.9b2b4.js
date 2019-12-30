@@ -1088,7 +1088,17 @@ window.__require = function e(t, n, c) {
                     window.h5api.submitRanking(c.num_door, function (data) { });
                 }
             },
+			setStorageSync:function(key, value){
+				console.log("记录1:" + key + value);
+				cc.sys.localStorage.setItem(key, value);
+			},
+			getStorageSync:function(key){
+				console.log("记录1:" + key);
+				return cc.sys.localStorage.getItem(key);
+			},
             onLoad: function() {
+				window.wx = this;
+				
                 cc.director.preloadScene("main"),
                 cc.director.preloadScene("success"),
                 cc.director.preloadScene("welcome"),
@@ -1121,7 +1131,7 @@ window.__require = function e(t, n, c) {
                 }),
                 this.continueBtn.on("touchstart", function() {
                     c.num_door < c.lastest_door ? cc.director.loadScene("main") : (c.num_door = 0,
-                    cc.sys.platform === cc.sys.WECHAT_GAME && wx.setStorageSync("time", 0),
+                     wx.setStorageSync("time", 0),
                     cc.director.loadScene("success"))
                 }),
                 this.success_btn.on("touchstart", function() {
@@ -1164,7 +1174,7 @@ window.__require = function e(t, n, c) {
                     cc.sys.platform === cc.sys.WECHAT_GAME) {
                         var i = parseInt(wx.getStorageSync("time")) + c.haoshi;
                         this.label_leijitime.getComponent(cc.Label).string = +i + " s";
-                        //wx.setStorageSync("time", i)
+                        wx.setStorageSync("time", i)
                     }
                 } else if (this.success.active = !0,
                 this.defeat.active = !1,
@@ -1175,14 +1185,17 @@ window.__require = function e(t, n, c) {
                 this.label_time.getComponent(cc.Label).string = c.haoshi + " s",
                 c.num_door++,
                 this.wxupdate());
-            //    if( cc.sys.platform === cc.sys.WECHAT_GAME) {
-            //         var a = parseInt(wx.getStorageSync("time")) + c.haoshi;
-            //         this.label_leijitime.getComponent(cc.Label).string = a + " s",
-            //         wx.setStorageSync("time", a),
-            //         c.num_door >= parseInt(wx.getStorageSync("level")) ? wx.setStorageSync("level", c.num_door) : 0 == c.ppppp && (c.num_door = parseInt(wx.getStorageSync("level")))
-            //     }
+              //  if( cc.sys.platform === cc.sys.WECHAT_GAME) 
+				{
+                     var a = parseInt(wx.getStorageSync("time")) + c.haoshi;
+                     this.label_leijitime.getComponent(cc.Label).string = a + " s",
+                     wx.setStorageSync("time", a),
+                     c.num_door >= parseInt(wx.getStorageSync("level")) ? wx.setStorageSync("level", c.num_door) : 0 == c.ppppp && (c.num_door = parseInt(wx.getStorageSync("level")))
+                 }
             }
+			
         }),
+		
         cc._RF.pop()
     }
     , {
@@ -1207,7 +1220,7 @@ window.__require = function e(t, n, c) {
                 cc.director.getPhysicsManager().enabled = !0,
                 cc.director.getPhysicsManager().gravity = cc.v2(),
                 cc.director.preloadScene("gameover"),
-                cc.director.preloadScene("success")
+                cc.director.preloadScene("success");
             },
             onBeginContact: function(e, t, n) {
                 c.is_Success = 1,
@@ -1364,6 +1377,33 @@ window.__require = function e(t, n, c) {
                 return cc.repeatForever(cc.sequence(i, a, i, r))
             },
             onLoad: function() {
+				
+				//修改
+				var lastDoor = cc.sys.localStorage.getItem("level");
+				if(c.num_door != lastDoor){
+					var markNode = new cc.Node();
+					markNode.width = cc.winSize.width;
+					markNode.height = cc.winSize.height;
+					markNode.addComponent(cc.BlockInputEvents);
+					var labelNode = new cc.Node();
+					var label = labelNode.addComponent(cc.Label);
+					markNode.addChild(labelNode);
+					this.node.addChild(markNode);
+					
+					var numLabel = 3;
+					label.string = numLabel;
+					this.TimeNumStart = setInterval(function(){
+						if((--numLabel) >= 0){
+							label.string = numLabel;
+						}else{
+							clearInterval(this.TimeNumStart);
+							markNode.destroy();
+							c.num_door = lastDoor;
+							cc.director.loadScene("main");
+						}
+					}.bind(this), 1000);
+				}
+
                 this.timeLabe = cc.find("Canvas/mianban/timebiao/time"),
                 this.yinliLabe = cc.find("Canvas/mianban/zhengE/yinli"),
                 this.nameLabe = cc.find("Canvas/titleboard/name"),
@@ -1893,7 +1933,8 @@ window.__require = function e(t, n, c) {
                     cc.director.loadScene("main")
                 }),
                 this.gotogame.on("touchstart", function() {
-                    cc.director.loadScene("main")
+                    cc.director.loadScene("main");
+					cc.sys.localStorage.setItem("firstPlay", true);
                 }),
                 this.ctx = this.node.getChildByName("tu").getComponent(cc.Graphics),
                 this.ctx.clear(),
@@ -1941,61 +1982,40 @@ window.__require = function e(t, n, c) {
                     type: cc.AudioClip
                 }
             },
+			setStorageSync:function(key, value){
+				console.log("记录0:" + key + value);
+				cc.sys.localStorage.setItem(key, value);
+			},
+			getStorageSync:function(key){
+				return cc.sys.localStorage.getItem(key);
+			},
             onLoad: function() {
-                var e = 0;
+				window.wx = this;
+				
+				
+				
+				var e = !wx.getStorageSync("firstPlay");
+
                 try {
-                    if (cc.sys.platform === cc.sys.WECHAT_GAME)
-                        wx.getStorageSync("level");
-                    else
-                        ;value ? c.num_door = 0 : (cc.sys.platform === cc.sys.WECHAT_GAME && (wx.setStorageSync("time", 0),
-                    wx.setStorageSync("level", 0)),
-                    e = 1,
-                    c.num_door = 0)
+					var level = wx.getStorageSync("level");
+					level ? c.num_door = 0 : ((wx.setStorageSync("time", 0),
+                    wx.setStorageSync("level", 0)), c.num_door = 0);                   
                 } catch (e) {}
                 cc.director.preloadScene("main"),
                 cc.director.preloadScene("rank"),
                 cc.director.preloadScene("teach"),
                 cc.audioEngine.stopAll(),
                 this.current = cc.audioEngine.play(this.audio, !0, .2),
-                c.lastest_door = o.guanqia.length,
-                cc.sys.platform === cc.sys.WECHAT_GAME && (this.GameClubButton = wx.createGameClubButton({
-                    icon: "green",
-                    style: {
-                        left: 0,
-                        top: 100,
-                        width: 40,
-                        height: 40
-                    }
-                }),
-                wx.showShareMenu(),
-                wx.onShareAppMessage(function(e) {
-                    
-                    // return {
-                    //     title: "@\u6211 \u8fd9\u4e2a\u5c0f\u6e38\u620f\u771f\u7684\u597d\u706b\uff01",
-                    //     imageUrl: "https://www.ldfangqi.cn/yinlidanzhures/res/tupian/share.png",
-                    //     success: function(e) {
-                    //         console.log("\u8f6c\u53d1\u6210\u529f!!!"),
-                    //         wx.showToast({
-                    //             title: "\u8f6c\u53d1\u6210\u529f",
-                    //             icon: "success"
-                    //         })
-                    //     },
-                    //     fail: function(e) {
-                    //         console.log("\u8f6c\u53d1\u5931\u8d25!!!"),
-                    //         wx.showToast({
-                    //             title: "\u8f6c\u53d1\u5931\u8d25",
-                    //             icon: "none"
-                    //         })
-                    //     }
-                    // }
-                }));
+                c.lastest_door = o.guanqia.length;
+    
                 var t = cc.scaleTo(.8, .9)
                   , n = cc.scaleTo(.8, 1)
                   , i = cc.sequence(t, n)
                   , a = cc.repeatForever(i);
                 this.startBtn.runAction(a),
                 this.startBtn.on("touchstart", function() {
-                    1 == e ? cc.director.loadScene("teach") : cc.director.loadScene("main")
+                    1 == e ? cc.director.loadScene("teach") : cc.director.loadScene("main");				
+					
                 }),
                 this.rank_btn.on("touchstart", function() {
                   /*  cc.sys.platform === cc.sys.WECHAT_GAME ? window.wx.postMessage({
