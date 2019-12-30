@@ -1083,6 +1083,10 @@ window.__require = function e(t, n, c) {
                 //     MAIN_MENU_NUM: "x1",
                 //     score: e
                 // }) : cc.log("\u63d0\u4ea4\u5f97\u5206: x1 : " + e)
+				
+				if (window.h5api && window.h5api.isLogin()) {
+                    window.h5api.submitRanking(c.num_door, function (data) { });
+                }
             },
             onLoad: function() {
                 cc.director.preloadScene("main"),
